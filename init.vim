@@ -18,6 +18,7 @@ set nobackup
 set nowritebackup
 set updatetime=300
 set signcolumn=yes
+set incsearch
 
 
 " Use a line cursor within insert mode and a block cursor everywhere else.
@@ -44,8 +45,16 @@ call plug#begin()
     Plug 'vim-airline/vim-airline'
     Plug 'vim-airline/vim-airline-themes'
     Plug 'chriskempson/base16-vim'
+    Plug 'nvim-tree/nvim-web-devicons' " optional
+    Plug 'nvim-tree/nvim-tree.lua'
+    Plug 'numToStr/Comment.nvim'
+    Plug 'akinsho/toggleterm.nvim', {'tag' : '*'}
 
 call plug#end()
+
+lua require "luis.nvimtree"
+lua require('Comment').setup()
+lua require "luis.toggleterm"
 
 let g:airline#extensions#tabline#enabled = 1
 colorscheme base16-solarized-dark
@@ -56,8 +65,23 @@ let mapleader=" "
 
 nnoremap <leader>w :w<CR>
 nnoremap <leader>q :q!<CR>
-nnoremap <leader>v :vsplit<CR>
-nnoremap <leader>c :bd<CR>
+nnoremap <silent> <leader>v :vsplit<CR>
+nnoremap <silent> <leader>c :bd<CR>
+
+" Do not yank with x
+nnoremap <silent> x "_x
+
+" Select All
+nnoremap <silent> <C-a> gg<S-v>G
+
+" Page UP/Page Down
+nnoremap <silent> <C-d> <C-d>zz
+nnoremap <silent> <C-u> <C-u>zz
+
+
+" Delete Word Backwards
+nnoremap <silent> dw vb"_d
+
 
 " Better window navigation
 nnoremap <S-h> <C-w>h 
@@ -65,8 +89,22 @@ nnoremap <S-j> <C-w>j
 nnoremap <S-k> <C-w>k
 nnoremap <S-l> <C-w>l
 
+" Navigate Between Buffers
 nnoremap <C-l> :bnext<CR>
 nnoremap <C-h> :bprevious<CR>
+
+" Stay in indent mode
+vnoremap <silent> < <gv
+vnoremap <silent> > >gv
+
+" Move text up and down
+xnoremap <silent> J :move '>+1<CR>gv-gv
+xnoremap <silent> K :move '<-2<CR>gv-gv
+
+
+nnoremap <silent> <leader>e :NvimTreeToggle<CR>
+nnoremap <silent> <F7> <cmd>ToggleTerm<CR>
+tnoremap <silent> <F7> <cmd>ToggleTerm<CR>
 
 inoremap <silent><expr> <TAB>
       \ coc#pum#visible() ? coc#pum#next(1) :
@@ -141,7 +179,7 @@ nmap <leader>ac  <Plug>(coc-codeaction-cursor)
 " Remap keys for apply code actions affect whole buffer
 nmap <leader>as  <Plug>(coc-codeaction-source)
 " Apply the most preferred quickfix action to fix diagnostic on the current line
-nmap <leader>qf  <Plug>(coc-fix-current)
+" nmap <leader>qf  <Plug>(coc-fix-current)
 
 " Remap keys for applying refactor code actions
 nmap <silent> <leader>re <Plug>(coc-codeaction-refactor)
